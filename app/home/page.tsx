@@ -2,7 +2,7 @@
 
 import { useAuth } from '@/app/lib/auth-context';
 import { ShieldCheck, TrendingUp, AlertTriangle, MessageSquare, ArrowRight } from 'lucide-react';
-import styles from './home.module.css';
+import styles from '@/app/home.module.css';
 import Link from 'next/link';
 
 const HomePage = () => {
