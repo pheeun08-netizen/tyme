@@ -9,7 +9,7 @@ import { LogOut, Key, UserPlus, Zap } from 'lucide-react'; // 아이콘 사용
 import './Header.css'; // 새로 생성한 CSS 파일 import
 
 
-const Header = () => {
+export const Header = () => {
   const { isLoggedIn, logout } = useAuth();
   const router = useRouter();
 
@@ -82,4 +82,4 @@ const Header = () => {
 };
 
 
-export default Header;
+// export default Header;
