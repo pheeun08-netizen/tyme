@@ -1,79 +1,90 @@
 "use client";
 
-
 import { useAuth } from '@/app/lib/auth-context';
-import { ShieldCheck, TrendingUp, AlertTriangle } from 'lucide-react';
+import { ShieldCheck, TrendingUp, AlertTriangle, MessageSquare, ArrowRight } from 'lucide-react';
 import styles from './home.module.css';
+import Link from 'next/link';
 
-
-export default function HomePage() {
-  const { isLoggedIn } = useAuth();
- 
-  if (!isLoggedIn) {
-    return (
-      <div className="text-center" style={{ padding: '5rem 0' }}>
-        <AlertTriangle style={{ width: '3rem', height: '3rem', color: 'var(--color-error)', margin: '0 auto 1rem auto' }} />
-        <h1 style={{ fontSize: '1.875rem', fontWeight: 700, color: 'var(--color-text)' }}>접근 권한 없음</h1>
-        <p style={{ fontSize: '1.125rem', color: '#4b5563', marginTop: '0.5rem' }}>
-          이 페이지는 로그인 후에만 접근 가능합니다.
-        </p>
-      </div>
-    );
-  }
-
+const HomePage = () => {
+  const { user } = useAuth();
+  const userName = user?.username || '사용자';
 
   return (
-    <div style={{ padding: '2.5rem 0' }}>
-      <h1 className={`${styles.welcomeTitle} title-border`}>
-        <ShieldCheck style={{ width: '2rem', height: '2rem', color: 'var(--color-secondary)', marginRight: '0.5rem' }} />
-        환영합니다, AI 경비병 관리자!
+    <div className={styles.contentWrapper}>
+      <ShieldCheck className="icon-large" style={{ color: 'var(--color-primary)' }} />
+      <h1 className={styles.welcomeTitle}>
+        환영합니다, {userName}님!
       </h1>
-     
+      <p className={styles.welcomeSubtitle}>
+        AI 경비 시스템의 실시간 보안 대시보드에서 네트워크 상태를 확인하고, 
+        주요 기능을 빠르게 이용해보세요.
+      </p>
+
+      {/* 주요 기능 그리드 */}
       <div className={styles.gridContainer}>
-       
-        {/* 카드 1: 실시간 분석 */}
-        <div className={`${styles.card} ${styles.cardBorderBlue}`}>
-          <TrendingUp className={styles.cardIconBlue} />
-          <h2 className={styles.cardTitle}>실시간 트래픽 분석</h2>
-          <p className={styles.cardText}>
-            현재 네트워크 상태를 즉시 확인하고 잠재적인 위협을 감지하세요. 대시보드로 이동합니다.
-          </p>
-          <a href="/main" className={styles.cardLinkBlue}>
-            대시보드 보기 &rarr;
-          </a>
-        </div>
-       
-        {/* 카드 2: 시스템 상태 */}
-        <div className={`${styles.card} ${styles.cardBorderGreen}`}>
-          <ShieldCheck className={styles.cardIconGreen} />
-          <h2 className={styles.cardTitle}>경비 시스템 상태</h2>
-          <p className={styles.cardText}>
-            AI 모델이 활성화되어 있으며, 현재까지 12건의 의심스러운 패킷을 차단했습니다.
-          </p>
-          <button className={styles.cardLinkGreen}>
-            설정 관리 &rarr;
-          </button>
-        </div>
-       
-        {/* 카드 3: 알림 및 로그 */}
-        <div className={`${styles.card} ${styles.cardBorderYellow}`}>
-          <AlertTriangle className={styles.cardIconYellow} />
-          <h2 className={styles.cardTitle}>주요 알림</h2>
-          <p className={styles.cardText}>
-            지난 24시간 동안 중간 위험 경보 3건이 발생했습니다. 자세한 로그를 확인하십시오.
-          </p>
-          <button className={styles.cardLinkYellow}>
-            로그 확인 &rarr;
-          </button>
-        </div>
+        {/* 1. 실시간 분석 카드 */}
+        <FeatureCard 
+          icon={TrendingUp} 
+          title="실시간 분석 대시보드" 
+          description="현재 네트워크 트래픽 패턴과 의심스러운 활동을 실시간으로 모니터링합니다."
+          link="/main"
+          linkText="대시보드 바로가기"
+          iconColorClass={styles.cardIconBlue}
+          borderClass={styles.cardBorderBlue}
+          linkClass={styles.cardLinkBlue}
+        />
+        
+        {/* 2. 보안 경고 로그 카드 */}
+        <FeatureCard 
+          icon={AlertTriangle} 
+          title="최근 보안 경고" 
+          description="AI가 탐지한 잠재적 위협 목록과 상세 정보를 확인하고 조치하세요."
+          link="/main#alerts" // 임시 링크
+          linkText="경고 로그 확인"
+          iconColorClass={styles.cardIconYellow}
+          borderClass={styles.cardBorderYellow}
+          linkClass={styles.cardLinkYellow}
+        />
+        
+        {/* 3. 시스템 설정 카드 */}
+        <FeatureCard 
+          icon={MessageSquare} 
+          title="AI 방어 설정" 
+          description="경비 시스템의 규칙, 민감도, 방화벽 정책 등을 맞춤 설정하고 관리합니다."
+          link="/settings" // 임시 링크
+          linkText="설정 페이지 이동"
+          iconColorClass={styles.cardIconGreen}
+          borderClass={styles.cardBorderGreen}
+          linkClass={styles.cardLinkGreen}
+        />
       </div>
-     
-      <div className="card" style={{ marginTop: '3rem' }}>
-        <h3 style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--color-text)', marginBottom: '1rem' }}>프로젝트 개요</h3>
-        <p style={{ color: '#374151', lineHeight: '1.625' }}>
-          이 AI 경비병 시스템은 DPI(Deep Packet Inspection) 기술과 머신러닝 모델을 결합하여, 기존 방화벽이 놓칠 수 있는 제로데이 공격 및 지능형 지속 위협(APT)을 실시간으로 식별하고 대응하도록 설계되었습니다. 해커톤 목표는 사용자 친화적인 대시보드를 통해 비전문가도 보안 상태를 쉽게 이해하도록 돕는 것입니다.
-        </p>
+
+      {/* 추가 정보 섹션 */}
+      <div style={{ padding: '2rem', borderTop: '1px solid #e5e7eb' }}>
+          <h2 style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--color-text)', marginBottom: '1rem' }}>
+              AI 경비병은 어떻게 작동하나요?
+          </h2>
+          <p style={{ color: 'var(--color-text-light)', maxWidth: '800px', margin: '0 auto' }}>
+              저희 시스템은 머신러닝 모델을 사용하여 정상적인 트래픽과 이상 트래픽을 분류합니다. 
+              일반적인 시그니처 기반 방어 시스템이 놓칠 수 있는 새로운 유형의 제로데이 공격도 
+              실시간으로 학습하고 감지하여 높은 방어율을 자랑합니다.
+          </p>
       </div>
     </div>
   );
-}
+};
+
+// FeatureCard 컴포넌트 정의
+const FeatureCard = ({ icon: Icon, title, description, link, linkText, iconColorClass, borderClass, linkClass }: any) => (
+  <div className={`${styles.card} ${borderClass}`}>
+    <Icon className={`${styles.cardIcon} ${iconColorClass}`} />
+    <h3 className={styles.cardTitle}>{title}</h3>
+    <p className={styles.cardText}>{description}</p>
+    <Link href={link} className={`${styles.cardLink} ${linkClass}`}>
+      {linkText} <ArrowRight style={{ width: '1rem', height: '1rem', marginLeft: '0.25rem' }} />
+    </Link>
+  </div>
+);
+
+export default HomePage;
+

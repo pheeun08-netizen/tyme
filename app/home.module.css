@@ -1,44 +1,67 @@
+/* ------------------------------------------- */
+/* Home Page Layout */
+/* ------------------------------------------- */
 
+.contentWrapper {
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: center; /* 중앙 정렬 적용 */
+}
 
-/* app/home/page.tsx에서 import하여 사용합니다. */
 .welcomeTitle {
-    color: var(--color-text);
-    font-size: 2.25rem; /* text-4xl */
-    font-weight: 800; /* font-extrabold */
-    margin-bottom: 2rem;
+    color: var(--color-primary);
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
     padding-bottom: 1rem;
     display: flex;
     align-items: center;
-    border-bottom: 1px solid #e5e7eb; /* border-b pb-4 */
+    justify-content: center; /* 제목 아이콘과 텍스트 중앙 정렬 */
+    border-bottom: 2px solid #e5e7eb;
 }
 
+.welcomeSubtitle {
+    font-size: 1.25rem;
+    color: var(--color-text-light);
+    margin-bottom: 3rem;
+    max-width: 600px;
+    margin: 0 auto 3rem auto;
+}
 
-/* Grid Layout */
+/* ------------------------------------------- */
+/* Feature Grid */
+/* ------------------------------------------- */
+
 .gridContainer {
     display: grid;
     grid-template-columns: 1fr;
     gap: 2rem;
+    margin-bottom: 3rem;
 }
-@media (min-width: 768px) { /* md breakpoint */
+@media (min-width: 768px) {
     .gridContainer {
         grid-template-columns: repeat(3, 1fr);
     }
 }
 
+/* ------------------------------------------- */
+/* Feature Card Styles */
+/* ------------------------------------------- */
 
-/* Card Styles */
 .card {
     background-color: white;
-    padding: 1.5rem;
+    padding: 2rem;
     border-radius: 0.75rem;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
     border: 1px solid #f3f4f6;
-    transition: box-shadow 0.3s ease-in-out;
-}
-.card:hover {
-    box-shadow: 0 0 10px rgba(37, 99, 235, 0.3); /* shadow-blue-300/50 replacement */
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    text-align: left; /* 카드 내용은 좌측 정렬 유지 */
 }
 
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(30, 64, 175, 0.15); /* 강조된 그림자 */
+}
 
 .cardTitle {
     font-size: 1.25rem;
@@ -47,44 +70,32 @@
     margin-bottom: 0.5rem;
 }
 
-
 .cardText {
-    color: #4b5563; /* gray-600 */
+    color: var(--color-text-light);
 }
 
-
 /* Card Icons and Links */
-.cardIconBlue, .cardIconGreen, .cardIconYellow {
-    width: 2rem;
-    height: 2rem;
+.cardIcon {
+    width: 2.5rem;
+    height: 2.5rem;
     margin-bottom: 1rem;
 }
 
-
 .cardIconBlue { color: var(--color-primary); }
 .cardIconGreen { color: var(--color-secondary); }
-.cardIconYellow { color: var(--color-warn); }
+.cardIconYellow { color: var(--color-accent); }
 
+.cardBorderBlue { border-top: 5px solid var(--color-primary); }
+.cardBorderGreen { border-top: 5px solid var(--color-secondary); }
+.cardBorderYellow { border-top: 5px solid var(--color-accent); }
 
-.cardBorderBlue { border-left: 4px solid var(--color-primary); }
-.cardBorderGreen { border-left: 4px solid var(--color-secondary); }
-.cardBorderYellow { border-left: 4px solid var(--color-warn); }
-
-
-.cardLinkBlue, .cardLinkGreen, .cardLinkYellow {
+.cardLink {
     display: inline-block;
     margin-top: 1rem;
     font-weight: 600;
+    text-decoration: none;
 }
-
-
 .cardLinkBlue { color: var(--color-primary); }
-.cardLinkBlue:hover { color: #1e40af; }
-
-
 .cardLinkGreen { color: var(--color-secondary); }
-.cardLinkGreen:hover { color: #15803d; }
+.cardLinkYellow { color: var(--color-accent); }
 
-
-.cardLinkYellow { color: var(--color-warn); }
-.cardLinkYellow:hover { color: #b45309; }

@@ -1,124 +1,108 @@
 "use client";
 
-
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { UserPlus } from 'lucide-react';
-import { useState } from 'react';
+import Link from 'next/link';
+import { UserPlus, Mail, Key, User } from 'lucide-react';
 
-
-export default function SignupPage() {
+const SignupPage = () => {
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
-
-
-  // NOTE: 실제 서비스에서는 window.alert 대신 사용자 정의 모달을 사용해야 합니다.
-  const customAlert = (message: string) => console.log(`[Alert] ${message}`);
-
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
 
-
-    setTimeout(() => {
-        customAlert('회원가입이 완료되었습니다. 로그인 페이지로 이동합니다.');
-        router.push('/login');
-    }, 1500);
+    // 임시 회원가입 로직 (실제로는 API 호출 및 데이터 저장 필요)
+    if (username && email && password) {
+      // alert() 대신 커스텀 모달 사용 권장
+      alert(`회원가입 성공! (아이디: ${username})`);
+      console.log(`User registered: ${username}, ${email}`);
+      router.push('/login'); // 회원가입 후 로그인 페이지로 이동
+    } else {
+      console.error('모든 필드를 입력해야 합니다.');
+      alert('모든 필드를 입력해주세요.');
+    }
   };
- 
+
   return (
-    <div className="flex-center" style={{ padding: '2.5rem 0' }}>
-      <div className="card" style={{ maxWidth: '576px', width: '100%', textAlign: 'center' }}>
-        <UserPlus style={{ width: '2.5rem', height: '2.5rem', color: 'var(--color-primary)', margin: '0 auto 1rem auto' }} />
-        <h2 style={{ fontSize: '1.875rem', fontWeight: 700, color: 'var(--color-text)', marginBottom: '2rem' }}>회원가입</h2>
-       
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-          {/* 이름 필드 */}
+    <div className="flex-center" style={{ minHeight: 'calc(100vh - 120px)' }}>
+      <div className="card" style={{ maxWidth: '450px', width: '100%' }}>
+        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+          <UserPlus className="icon-large" style={{ color: 'var(--color-secondary)' }} />
+          <h2 style={{ fontSize: '2rem', fontWeight: 700, color: 'var(--color-text)' }}>회원가입</h2>
+          <p style={{ color: 'var(--color-text-light)', marginTop: '0.5rem' }}>보안 시스템 사용을 시작하세요</p>
+        </div>
+        
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
           <div>
-            <label htmlFor="name" style={{ display: 'block', fontSize: '0.875rem', fontWeight: 500, color: '#374151', textAlign: 'left', marginBottom: '0.25rem' }}>
-              이름
-            </label>
-            <input
-              id="name"
-              name="name"
-              type="text"
-              required
-              placeholder="홍길동"
-              className="form-input"
-            />
-          </div>
-           
-          {/* 이메일 필드 */}
-          <div>
-            <label htmlFor="email" style={{ display: 'block', fontSize: '0.875rem', fontWeight: 500, color: '#374151', textAlign: 'left', marginBottom: '0.25rem' }}>
-              이메일 주소
-            </label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              autoComplete="email"
-              required
-              placeholder="user@example.com"
-              className="form-input"
-            />
+            <label htmlFor="username" style={{ display: 'block', fontWeight: 600, marginBottom: '0.5rem' }}>아이디</label>
+            <div style={{ position: 'relative' }}>
+              <User style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', width: '1.25rem', height: '1.25rem', color: '#9ca3af' }} />
+              <input
+                id="username"
+                type="text"
+                className="form-input"
+                placeholder="사용할 아이디"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+                style={{ paddingLeft: '3rem' }}
+              />
+            </div>
           </div>
 
-
-          {/* 비밀번호 필드 */}
           <div>
-            <label htmlFor="password" style={{ display: 'block', fontSize: '0.875rem', fontWeight: 500, color: '#374151', textAlign: 'left', marginBottom: '0.25rem' }}>
-              비밀번호 (8자 이상)
-            </label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              autoComplete="new-password"
-              required
-              placeholder="********"
-              minLength={8}
-              className="form-input"
-            />
-          </div>
-         
-          {/* 비밀번호 확인 필드 */}
-          <div>
-            <label htmlFor="confirm-password" style={{ display: 'block', fontSize: '0.875rem', fontWeight: 500, color: '#374151', textAlign: 'left', marginBottom: '0.25rem' }}>
-              비밀번호 확인
-            </label>
-            <input
-              id="confirm-password"
-              name="confirm-password"
-              type="password"
-              required
-              placeholder="********"
-              minLength={8}
-              className="form-input"
-            />
+            <label htmlFor="email" style={{ display: 'block', fontWeight: 600, marginBottom: '0.5rem' }}>이메일</label>
+            <div style={{ position: 'relative' }}>
+              <Mail style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', width: '1.25rem', height: '1.25rem', color: '#9ca3af' }} />
+              <input
+                id="email"
+                type="email"
+                className="form-input"
+                placeholder="이메일 주소"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                style={{ paddingLeft: '3rem' }}
+              />
+            </div>
           </div>
 
+          <div>
+            <label htmlFor="password" style={{ display: 'block', fontWeight: 600, marginBottom: '0.5rem' }}>비밀번호</label>
+            <div style={{ position: 'relative' }}>
+              <Key style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', width: '1.25rem', height: '1.25rem', color: '#9ca3af' }} />
+              <input
+                id="password"
+                type="password"
+                className="form-input"
+                placeholder="비밀번호 설정"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                style={{ paddingLeft: '3rem' }}
+              />
+            </div>
+          </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="btn btn-green"
-            style={{ width: '100%', marginTop: '0.5rem' }}
-          >
-            {loading ? '가입 처리 중...' : '회원가입 완료'}
+          <button type="submit" className="btn btn-green" style={{ marginTop: '1rem' }}>
+            <UserPlus className="w-5 h-5" />
+            가입하기
           </button>
         </form>
 
-
-        <div style={{ marginTop: '1.5rem', textAlign: 'center' }}>
-            <p style={{ fontSize: '0.875rem', color: '#4b5563' }}>
-                이미 계정이 있으신가요?
-                <a href="/login" style={{ marginLeft: '0.5rem', fontWeight: 500, color: 'var(--color-primary)' }}>
-                    로그인
-                </a>
-            </p>
-        </div>
+        <p style={{ textAlign: 'center', marginTop: '2rem', fontSize: '0.9rem', color: 'var(--color-text-light)' }}>
+          이미 계정이 있으신가요? 
+          <Link href="/login" style={{ color: 'var(--color-primary)', fontWeight: 600, textDecoration: 'none', marginLeft: '0.5rem' }}>
+            로그인
+          </Link>
+        </p>
       </div>
     </div>
   );
-}
+};
+
+export default SignupPage;
+

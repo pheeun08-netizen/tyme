@@ -1,72 +1,61 @@
 "use client";
 
-
-import React from 'react';
+import { useAuth } from '@/app/lib/auth-context';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/app/lib/auth-context';
-import { LogOut, Key, UserPlus, Zap } from 'lucide-react'; // 아이콘 사용
-import './Header.css'; // 새로 생성한 CSS 파일 import
+import { LogIn, LogOut, UserPlus, TrendingUp, Shield, Home } from 'lucide-react';
+import './Header.css'; // Header 컴포넌트 스타일
 
-
-export const Header = () => {
-  const { isLoggedIn, logout } = useAuth();
+const Header = () => {
+  const { isAuthenticated, logout } = useAuth();
   const router = useRouter();
 
-
-  // '경비 시스템' 로고 클릭 핸들러
+  // '경비 시스템' 로고 클릭 시 이동할 경로를 결정
   const handleLogoClick = () => {
-    if (isLoggedIn) {
-      router.push('/home'); // 로그인 상태 -> /home
+    if (isAuthenticated) {
+      router.push('/home');
     } else {
-      router.push('/'); // 로그아웃 상태 -> /
+      router.push('/');
     }
   };
 
-
-  // '로그아웃' 버튼 클릭 핸들러
   const handleLogout = () => {
     logout();
     router.push('/'); // 로그아웃 후 app/page.tsx (루트)로 이동
   };
 
-
   return (
     <header className="main-header">
-      <div className="container header-content">
-
-
-        {/* 왼쪽: 시스템 이름 (로고) */}
-        <div
-          onClick={handleLogoClick}
-          className="logo-text"
-        >
-          <Zap className="logo-icon" />
-          <span>경비 시스템</span>
+      <div className="header-content">
+        {/* 왼쪽 상단: 로고 및 시스템 이름 */}
+        <div className="header-logo" onClick={handleLogoClick}>
+          <Shield className="logo-icon" />
+          <span className="header-title">경비 시스템</span>
         </div>
 
-
-        {/* 오른쪽: 내비게이션 링크 */}
+        {/* 오른쪽 상단: 네비게이션 아이콘 */}
         <nav className="header-nav">
-          {/* 1. 실시간 분석 (로그인 여부와 관계없이 노출) */}
-          <Link href="/main" className="nav-link">
-            <Zap className="nav-icon" />
-            <span className="nav-text-hidden">실시간 분석</span>
-          </Link>
-
-
-          {/* 로그인 상태에 따른 조건부 링크 */}
-          {isLoggedIn ? (
-            // --- 로그인 후 상태: '로그아웃' 아이콘 ---
-            <button onClick={handleLogout} className="nav-link" title="로그아웃">
-              <LogOut className="nav-icon" />
-              <span className="nav-text-hidden">로그아웃</span>
-            </button>
-          ) : (
-            // --- 로그아웃 전 상태: '로그인', '회원가입' 아이콘 ---
+          {isAuthenticated ? (
             <>
+              {/* 로그인 후: 실시간 분석, 로그아웃 */}
+              <Link href="/main" className="nav-link">
+                <TrendingUp className="nav-icon" />
+                <span className="nav-text-hidden">실시간 분석</span>
+              </Link>
+              <button onClick={handleLogout} className="nav-link">
+                <LogOut className="nav-icon" />
+                <span className="nav-text-hidden">로그아웃</span>
+              </button>
+            </>
+          ) : (
+            <>
+              {/* 로그아웃 상태: 실시간 분석, 로그인, 회원가입 */}
+              <Link href="/main" className="nav-link">
+                <TrendingUp className="nav-icon" />
+                <span className="nav-text-hidden">실시간 분석</span>
+              </Link>
               <Link href="/login" className="nav-link">
-                <Key className="nav-icon" />
+                <LogIn className="nav-icon" />
                 <span className="nav-text-hidden">로그인</span>
               </Link>
               <Link href="/signup" className="nav-link">
@@ -81,5 +70,4 @@ export const Header = () => {
   );
 };
 
-
-// export default Header;
+export default Header;

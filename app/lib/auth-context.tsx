@@ -1,70 +1,55 @@
 "use client";
 
+import React, { createContext, useContext, useState, useMemo } from 'react';
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-
-
-// 1. Context 타입 정의
+// 인증 상태의 타입을 정의합니다.
 interface AuthContextType {
-  isLoggedIn: boolean;
-  login: () => void;
+  isAuthenticated: boolean;
+  login: (username: string) => void;
   logout: () => void;
+  user: { username: string } | null;
 }
 
-
-// 2. Context 생성 (기본값 설정)
+// 기본 Context 값 (초기 상태)
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+// 인증 Context Provider 컴포넌트
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+  // 실제 프로젝트에서는 로컬 스토리지나 서버 세션을 사용해야 합니다.
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState<{ username: string } | null>(null);
 
-// 3. Provider 컴포넌트
-interface AuthProviderProps {
-  children: ReactNode;
-}
-
-
-export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  // 모의 사용자 인증 상태. 실제 앱에서는 Firebase/Supabase 등에서 가져와야 합니다.
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-
-
-  // 컴포넌트 마운트 시 저장된 인증 상태를 로드하는 (모의) 로직
-  useEffect(() => {
-    // Canvas 환경에서는 localStorage 사용이 제한되므로, 초기 상태를 false로 유지합니다.
-    // 실제 환경에서는 localStorage.getItem('isLoggedIn') 등을 사용합니다.
-    const initialAuthStatus = false;
-    setIsLoggedIn(initialAuthStatus);
-  }, []);
-
-
-  const login = () => {
-    // 실제 로그인 API 호출 로직이 들어가야 합니다.
-    console.log("로그인 처리됨: 상태를 true로 설정합니다.");
-    setIsLoggedIn(true);
-    // localStorage.setItem('isLoggedIn', 'true'); // 실제 앱에서 사용
+  const login = (username: string) => {
+    setIsAuthenticated(true);
+    setUser({ username });
+    // 실제 로그인 로직 (API 호출 등)이 여기에 들어갑니다.
+    console.log(`User ${username} logged in.`);
   };
-
 
   const logout = () => {
-    // 실제 로그아웃 API 호출 로직이 들어가야 합니다.
-    console.log("로그아웃 처리됨: 상태를 false로 설정합니다.");
-    setIsLoggedIn(false);
-    // localStorage.removeItem('isLoggedIn'); // 실제 앱에서 사용
+    setIsAuthenticated(false);
+    setUser(null);
+    // 실제 로그아웃 로직 (API 호출 등)이 여기에 들어갑니다.
+    console.log('User logged out.');
   };
 
+  // Context 값을 useMemo로 래핑하여 불필요한 리렌더링을 방지합니다.
+  const value = useMemo(() => ({
+    isAuthenticated,
+    login,
+    logout,
+    user
+  }), [isAuthenticated, user]);
 
-  return (
-    <AuthContext.Provider value={{ isLoggedIn, login, logout }}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
-
-// 4. Custom Hook 정의
+// useAuth 훅을 만들어 컴포넌트에서 쉽게 Context에 접근하도록 합니다.
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth는 AuthProvider 내에서 사용되어야 합니다.');
+    throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
 };
+
