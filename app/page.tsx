@@ -1,50 +1,20 @@
-'use client'; 
+"use client";
+import styles from "./home.module.css";
+import Link from "next/link";
 
-import { useRouter } from 'next/navigation';
-import styles from './home.module.css'; // CSS 모듈 임포트 (home.module.css 파일을 만드세요)
-import React from 'react';
-
-export default function Home() {
-  const router = useRouter();
-
-  const goToLogin = () => router.push('/login');
-  const goToSignUp = () => router.push('/signup');
-
+export default function HomePage() {
   return (
-    // CSS 모듈로 정의된 컨테이너와 애니메이션 클래스 적용
-    <div className={styles.container}>
-      
-      {/* 배경 무브먼트 요소 추가 */}
-      <div className={styles.backgroundElements}>
-        <div className={`${styles.bubble} ${styles.bubble1}`}></div>
-        <div className={`${styles.bubble} ${styles.bubble2}`}></div>
-        <div className={`${styles.bubble} ${styles.bubble3}`}></div>
-      </div>
-
-      {/* 콘텐츠 */}
-      <header className={styles.header}>
-        <h1 className={styles.title}>🚀 My Program Platform</h1>
-        <p className={styles.description}>
-          AI 기반 작업을 웹에서 바로 실행하고 관리하세요.
-        </p>
-      </header>
-
-      <main className={styles.main}>
-        <div className={styles.buttonContainer}>
-          <button 
-            onClick={goToLogin} 
-            className={`${styles.button} ${styles.primaryButton}`}
-          >
-            로그인
-          </button>
-          <button 
-            onClick={goToSignUp} 
-            className={styles.button}
-          >
-            회원가입
-          </button>
+    <div className={styles.hero}>
+      <div className={styles.heroContent}>
+        <h1>AI 보안 경비 시스템</h1>
+        <p>Wi-Fi 트래픽을 분석해 스팸 메시지와 악성코드를 실시간으로 차단합니다.</p>
+        <div className={styles.ctaButtons}>
+          <Link href="/login" className={styles.ctaButton}>로그인</Link>
+          <Link href="/signup" className={styles.ctaButton}>회원가입</Link>
         </div>
-      </main>
+      </div>
     </div>
   );
 }
+
+

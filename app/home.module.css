@@ -1,104 +1,106 @@
-@keyframes background-movement {
-  0% { transform: translate(0, 0) scale(1); opacity: 0.5; }
-  25% { transform: translate(20vw, -20vh) scale(1.1); opacity: 0.6; }
-  50% { transform: translate(-20vw, 20vh) scale(0.9); opacity: 0.4; }
-  75% { transform: translate(10vw, -10vh) scale(1.2); opacity: 0.7; }
-  100% { transform: translate(0, 0) scale(1); opacity: 0.5; }
-}
-
-/* ------------------ 레이아웃 및 다크 모드 ------------------ */
-.container {
+.hero {
+  height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
-  padding: 4rem 2rem;
-  background-color: #1e2025; /* 다크 모드 배경 */
-  color: #e0e0e0; /* 텍스트 색상 */
-  position: relative;
-  overflow: hidden; /* 배경 요소가 넘치는 것을 방지 */
-  z-index: 1;
-}
-
-.backgroundElements {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-}
-
-.bubble {
-  position: absolute;
-  width: 150px;
-  height: 150px;
-  background: rgba(100, 100, 255, 0.1); /* 은은한 파란색 */
-  border-radius: 50%;
-  filter: blur(50px);
-  animation: background-movement 20s infinite ease-in-out alternate;
-}
-
-.bubble1 { top: 10%; left: 10%; animation-delay: 0s; }
-.bubble2 { bottom: 20%; right: 15%; width: 200px; height: 200px; animation-delay: 7s; }
-.bubble3 { top: 70%; left: 30%; width: 100px; height: 100px; background: rgba(0, 200, 255, 0.1); animation-delay: 14s; }
-
-
-.header, .main {
-  position: relative;
-  z-index: 10;
   text-align: center;
+  background: var(--bg-primary);
+  color: var(--text-primary);
 }
 
-.title {
-  font-size: 3.5rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
-  color: #8c9eff; /* 강조 색상 */
+.heroContent h1 {
+  font-size: 4rem;
+  background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-.description {
-  font-size: 1.2rem;
-  color: #a0a0a0;
-  max-width: 600px;
-  line-height: 1.6;
-  margin-bottom: 3rem;
-  font-weight: 300;
+.heroContent p {
+  color: var(--text-secondary);
+  font-size: 1.3rem;
+  margin: 15px 0 30px;
 }
 
-/* ------------------ 버튼 스타일 ------------------ */
-.buttonContainer {
+.ctaButtons {
   display: flex;
   gap: 20px;
 }
 
-.button {
-  padding: 14px 30px;
-  font-size: 1.1rem;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-weight: 500;
-}
-
-.primaryButton {
-  background-color: #5d5dff; /* 주 색상 */
+.ctaButton {
+  background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
   color: white;
-  box-shadow: 0 5px 15px rgba(93, 93, 255, 0.4);
+  padding: 12px 28px;
+  border-radius: 25px;
+  text-decoration: none;
+  transition: transform 0.3s ease;
 }
 
-.primaryButton:hover {
-  background-color: #4a4ade;
-  transform: translateY(-2px);
+.ctaButton:hover {
+  transform: translateY(-5px);
 }
 
-.button:not(.primaryButton) {
-  background-color: #383a40;
-  color: #e0e0e0;
-  border: 1px solid #555;
+/* Dashboard */
+.dashboardContainer {
+  padding: 120px 20px;
+  max-width: 1000px;
+  margin: 0 auto;
+  text-align: center;
 }
 
-.button:not(.primaryButton):hover {
-  background-color: #45474d;
-  transform: translateY(-2px);
+.logTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 40px;
+}
+
+.logTable th, .logTable td {
+  border: 1px solid rgba(255,255,255,0.2);
+  padding: 12px;
+  color: var(--text-primary);
+}
+
+.logTable th {
+  background: var(--primary-color);
+  color: white;
+}
+
+.logTable tr:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+/* Auth Pages */
+.authContainer {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.authForm {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 300px;
+}
+
+.authForm input {
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.authForm button {
+  padding: 10px;
+  border-radius: 6px;
+  border: none;
+  background: var(--primary-color);
+  color: white;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.authForm button:hover {
+  background: var(--secondary-color);
 }
