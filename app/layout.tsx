@@ -1,37 +1,31 @@
-"use client";
-import "./globals.css";
-import Link from "next/link";
-import { useState } from "react";
+import './globals.css';
+import Header from './components/Header';
+import { AuthProvider } from './lib/auth-context';
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<"light" | "dark">("dark");
 
-  const toggleTheme = () => {
-    setTheme(theme === "light" ? "dark" : "light");
-  };
+// 메타데이터는 Next.js 서버 컴포넌트에서만 사용됩니다.
+export const metadata = {
+  title: 'AI 경비 시스템',
+  description: 'AI 기반 네트워크 보안 트래픽 분석 대시보드',
+};
 
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <html lang="ko" data-theme={theme === "light" ? "light" : undefined}>
+    <html lang="ko">
       <body>
-        <div className="animated-bg" />
-        <header>
-          <nav className="container">
-            <div className="logo">AI Security Guard</div>
-            <ul className="nav-links">
-              <li><Link href="/">Home</Link></li>
-              <li><Link href="/dashboard">Dashboard</Link></li>
-              <li><Link href="/login">Login</Link></li>
-              <li><Link href="/signup">Sign Up</Link></li>
-            </ul>
-            <button className="theme-toggle" onClick={toggleTheme}>
-              {theme === "light" ? "🌙" : "☀️"}
-            </button>
-          </nav>
-        </header>
-        <main>{children}</main>
+        {/* AuthProvider로 전체 앱을 감싸서 Context를 제공합니다. */}
+        <AuthProvider>
+          <Header />
+          <main className="container" style={{ minHeight: 'calc(100vh - 64px)' }}>
+            {children}
+          </main>
+        </AuthProvider>
       </body>
     </html>
   );
 }
-
-

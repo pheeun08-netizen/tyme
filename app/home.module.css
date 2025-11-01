@@ -1,71 +1,90 @@
-.header {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  background: rgba(0,0,0,0.9);
-  backdrop-filter: blur(20px);
-  z-index: 1000;
-  padding: 15px 20px;
-  display: flex;
-  justify-content: center;
+
+
+/* app/home/page.tsx에서 import하여 사용합니다. */
+.welcomeTitle {
+    color: var(--color-text);
+    font-size: 2.25rem; /* text-4xl */
+    font-weight: 800; /* font-extrabold */
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #e5e7eb; /* border-b pb-4 */
 }
 
-.nav {
-  width: 100%;
-  max-width: 1200px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+
+/* Grid Layout */
+.gridContainer {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+}
+@media (min-width: 768px) { /* md breakpoint */
+    .gridContainer {
+        grid-template-columns: repeat(3, 1fr);
+    }
 }
 
-.logo {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: var(--primary-color);
+
+/* Card Styles */
+.card {
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    border: 1px solid #f3f4f6;
+    transition: box-shadow 0.3s ease-in-out;
+}
+.card:hover {
+    box-shadow: 0 0 10px rgba(37, 99, 235, 0.3); /* shadow-blue-300/50 replacement */
 }
 
-.navLinks {
-  list-style: none;
-  display: flex;
-  gap: 20px;
+
+.cardTitle {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: 0.5rem;
 }
 
-.navLinks li {
-  display: flex;
-  align-items: center;
+
+.cardText {
+    color: #4b5563; /* gray-600 */
 }
 
-.navButton {
-  background: none;
-  border: 2px solid var(--primary-color);
-  color: var(--primary-color);
-  padding: 6px 15px;
-  border-radius: 20px;
-  cursor: pointer;
-  transition: all 0.3s ease;
+
+/* Card Icons and Links */
+.cardIconBlue, .cardIconGreen, .cardIconYellow {
+    width: 2rem;
+    height: 2rem;
+    margin-bottom: 1rem;
 }
 
-.navButton:hover {
-  background: var(--primary-color);
-  color: white;
+
+.cardIconBlue { color: var(--color-primary); }
+.cardIconGreen { color: var(--color-secondary); }
+.cardIconYellow { color: var(--color-warn); }
+
+
+.cardBorderBlue { border-left: 4px solid var(--color-primary); }
+.cardBorderGreen { border-left: 4px solid var(--color-secondary); }
+.cardBorderYellow { border-left: 4px solid var(--color-warn); }
+
+
+.cardLinkBlue, .cardLinkGreen, .cardLinkYellow {
+    display: inline-block;
+    margin-top: 1rem;
+    font-weight: 600;
 }
 
-.hero {
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  padding-top: 80px; /* 헤더 높이 만큼 여유 */
-}
 
-.heroContent h1 {
-  font-size: 3rem;
-  margin-bottom: 20px;
-  color: var(--primary-color);
-}
+.cardLinkBlue { color: var(--color-primary); }
+.cardLinkBlue:hover { color: #1e40af; }
 
-.heroContent p {
-  font-size: 1.2rem;
-  color: var(--text-secondary);
-}
+
+.cardLinkGreen { color: var(--color-secondary); }
+.cardLinkGreen:hover { color: #15803d; }
+
+
+.cardLinkYellow { color: var(--color-warn); }
+.cardLinkYellow:hover { color: #b45309; }
