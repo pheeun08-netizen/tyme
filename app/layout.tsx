@@ -1,5 +1,5 @@
 import './globals.css';
-import Header from './components/header';
+import Header from './components/Header';
 import { AuthProvider } from './lib/auth-context';
 
 // 메타데이터는 Next.js 서버 컴포넌트에서만 사용됩니다.
