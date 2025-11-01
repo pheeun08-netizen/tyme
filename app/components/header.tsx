@@ -4,7 +4,7 @@ import { useAuth } from '@/app/lib/auth-context';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { LogIn, LogOut, UserPlus, TrendingUp, Shield, Home } from 'lucide-react';
-import './csseader.css'; // Header 컴포넌트 스타일
+import './cssheader.css'; // Header 컴포넌트 스타일
 
 const Header = () => {
   const { isAuthenticated, logout } = useAuth();
