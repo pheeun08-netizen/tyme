@@ -57,26 +57,30 @@ class DataStore:
             }
         
         latest = self.analysis_data[0]
-        results = latest.get('results', [])
+        # 중첩된 data 구조 처리
+        results = latest.get('data', [])
         
         # 위협 계산
-        total_threats = len([
-            r for r in results 
-            if r.get('llm_analysis', {}).get('status') == 'suspicious'
-        ])
+        total_threats = 0
+        blocked = 0
         
-        # 차단된 접근 계산
-        blocked = len([
-            r for r in results 
-            if r.get('llm_analysis', {}).get('action') == 'block'
-        ])
+        for r in results:
+            llm_text = r.get('llm_analysis', '{}')
+            try:
+                llm = json.loads(llm_text) if isinstance(llm_text, str) else llm_text
+                if llm.get('status') == 'suspicious':
+                    total_threats += 1
+                if llm.get('action') == 'block':
+                    blocked += 1
+            except:
+                pass
         
-        # 보안 점수 계산 (위협이 많을수록 낮아짐)
+        # 보안 점수 계산
         security_score = max(0, 100 - (total_threats * 2))
         
-        # 트래픽 계산 (실제로는 패킷 크기 합산해야 함)
-        total_packets = sum(len(a.get('results', [])) for a in self.analysis_data[:10])
-        traffic_gb = round(total_packets * 0.001, 2)  # 대략적인 계산
+        # 트래픽 계산
+        total_packets = sum(len(a.get('data', [])) for a in self.analysis_data[:10])
+        traffic_gb = round(total_packets * 0.001, 2)
         
         return {
             'total_traffic': f'{traffic_gb} GB',
@@ -90,22 +94,30 @@ class DataStore:
         threats = []
         
         for analysis in self.analysis_data[:50]:
-            results = analysis.get('results', [])
+            # 중첩된 data 구조 처리
+            results = analysis.get('data', [])
             for result in results:
-                llm = result.get('llm_analysis', {})
-                if llm.get('status') == 'suspicious':
-                    threats.append({
-                        'timestamp': result.get('timestamp'),
-                        'source_ip': result.get('source_ip'),
-                        'destination_ip': result.get('destination_ip'),
-                        'protocol': result.get('protocol'),
-                        'reason': llm.get('reason', 'Unknown'),
-                        'severity': llm.get('severity', 'medium'),
-                        'action': llm.get('action', 'monitor')
-                    })
+                session = result.get('session', {})
+                llm_text = result.get('llm_analysis', '{}')
+                
+                try:
+                    llm = json.loads(llm_text) if isinstance(llm_text, str) else llm_text
                     
-                    if len(threats) >= limit:
-                        return threats
+                    if llm.get('status') == 'suspicious':
+                        threats.append({
+                            'timestamp': result.get('timestamp'),
+                            'source_ip': session.get('src_ip'),
+                            'destination_ip': session.get('dst_ip'),
+                            'protocol': 'TCP',
+                            'reason': llm.get('reason', 'Unknown'),
+                            'severity': llm.get('severity', 'medium'),
+                            'action': llm.get('action', 'monitor')
+                        })
+                        
+                        if len(threats) >= limit:
+                            return threats
+                except:
+                    pass
         
         return threats
     

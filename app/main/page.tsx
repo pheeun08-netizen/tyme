@@ -3,7 +3,7 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
 // Flask API URL
-const API_URL = 'http://localhost:5000'
+const API_URL = 'http://172.30.1.92:5000'
 
 interface Stats {
   total_traffic: string
@@ -34,11 +34,15 @@ export default function MainPage() {
   const [threats, setThreats] = useState<Threat[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [lastUpdate, setLastUpdate] = useState<string>('')
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [mounted, setMounted] = useState(false)
 
-  // 로그인 체크
+  // 마운트 및 로그인 체크
   useEffect(() => {
-    const isLoggedIn = localStorage.getItem('isLoggedIn')
-    if (!isLoggedIn) {
+    setMounted(true)
+    const loggedIn = localStorage.getItem('isLoggedIn')
+    setIsLoggedIn(!!loggedIn)
+    if (!loggedIn) {
       setShowModal(true)
     }
   }, [])
@@ -91,7 +95,6 @@ export default function MainPage() {
   }
 
   const handleLogoClick = () => {
-    const isLoggedIn = localStorage.getItem('isLoggedIn')
     if (isLoggedIn) {
       router.push('/home')
     } else {
@@ -104,8 +107,6 @@ export default function MainPage() {
     localStorage.removeItem('userEmail')
     router.push('/')
   }
-
-  const isLoggedIn = typeof window !== 'undefined' && localStorage.getItem('isLoggedIn')
 
   // 심각도에 따른 색상
   const getSeverityColor = (severity: string) => {
@@ -128,7 +129,11 @@ export default function MainPage() {
             <button className="nav-button primary" onClick={() => router.push('/main')}>
               실시간 분석
             </button>
-            {isLoggedIn ? (
+            {!mounted ? (
+              <button className="nav-button secondary" disabled>
+                ...
+              </button>
+            ) : isLoggedIn ? (
               <button className="nav-button secondary" onClick={handleLogout}>
                 로그아웃
               </button>
