@@ -2,15 +2,87 @@
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
+// Flask API URL
+const API_URL = 'http://localhost:5000'
+
+interface Stats {
+  total_traffic: string
+  total_threats: number
+  blocked_access: number
+  security_score: number
+}
+
+interface Threat {
+  timestamp: string
+  source_ip: string
+  destination_ip: string
+  protocol: string
+  reason: string
+  severity: string
+  action: string
+}
+
 export default function MainPage() {
   const router = useRouter()
   const [showModal, setShowModal] = useState(false)
+  const [stats, setStats] = useState<Stats>({
+    total_traffic: '0 GB',
+    total_threats: 0,
+    blocked_access: 0,
+    security_score: 100
+  })
+  const [threats, setThreats] = useState<Threat[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [lastUpdate, setLastUpdate] = useState<string>('')
 
+  // 로그인 체크
   useEffect(() => {
     const isLoggedIn = localStorage.getItem('isLoggedIn')
     if (!isLoggedIn) {
       setShowModal(true)
     }
+  }, [])
+
+  // 통계 데이터 가져오기
+  const fetchStats = async () => {
+    try {
+      const response = await fetch(`${API_URL}/api/stats`)
+      if (response.ok) {
+        const data = await response.json()
+        setStats(data)
+        setLastUpdate(new Date().toLocaleTimeString('ko-KR'))
+      }
+    } catch (error) {
+      console.error('Failed to fetch stats:', error)
+    }
+  }
+
+  // 위협 목록 가져오기
+  const fetchThreats = async () => {
+    try {
+      const response = await fetch(`${API_URL}/api/threats`)
+      if (response.ok) {
+        const data = await response.json()
+        setThreats(data.threats || [])
+      }
+    } catch (error) {
+      console.error('Failed to fetch threats:', error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  // 초기 로드 및 3초마다 자동 갱신
+  useEffect(() => {
+    fetchStats()
+    fetchThreats()
+
+    const interval = setInterval(() => {
+      fetchStats()
+      fetchThreats()
+    }, 3000) // 3초마다 갱신
+
+    return () => clearInterval(interval)
   }, [])
 
   const handleModalClose = () => {
@@ -35,12 +107,22 @@ export default function MainPage() {
 
   const isLoggedIn = typeof window !== 'undefined' && localStorage.getItem('isLoggedIn')
 
+  // 심각도에 따른 색상
+  const getSeverityColor = (severity: string) => {
+    switch (severity?.toLowerCase()) {
+      case 'high': return '#e74c3c'
+      case 'medium': return '#e67e22'
+      case 'low': return '#f39c12'
+      default: return '#95a5a6'
+    }
+  }
+
   return (
     <div>
       <nav className="navbar">
         <div className="container navbar-content">
           <div className="logo" onClick={handleLogoClick}>
-            🛡️ 네트워크 트래픽 분석
+            네트워크 트래픽 분석
           </div>
           <div className="nav-links">
             <button className="nav-button primary" onClick={() => router.push('/main')}>
@@ -67,41 +149,108 @@ export default function MainPage() {
       <div className="container main-container">
         <div className="analysis-header">
           <h1>🔍 실시간 네트워크 분석</h1>
-          <p>AI가 실시간으로 네트워크 트래픽을 모니터링하고 있습니다.</p>
+          <p>
+            AI가 실시간으로 네트워크 트래픽을 모니터링하고 있습니다.
+            {lastUpdate && <span style={{marginLeft: '10px', opacity: 0.7}}>
+              (마지막 업데이트: {lastUpdate})
+            </span>}
+          </p>
         </div>
 
-        <div className="analysis-grid">
-          <div className="stat-card">
-            <h3>총 트래픽</h3>
-            <div className="stat-value">1.2 GB</div>
+        {isLoading ? (
+          <div style={{textAlign: 'center', padding: '3rem', color: 'white', fontSize: '1.2rem'}}>
+            데이터를 불러오는 중...
           </div>
-          <div className="stat-card">
-            <h3>탐지된 위협</h3>
-            <div className="stat-value" style={{color: '#e74c3c'}}>3</div>
-          </div>
-          <div className="stat-card">
-            <h3>차단된 접근</h3>
-            <div className="stat-value" style={{color: '#e67e22'}}>12</div>
-          </div>
-          <div className="stat-card">
-            <h3>보안 점수</h3>
-            <div className="stat-value" style={{color: '#27ae60'}}>98%</div>
-          </div>
-        </div>
+        ) : (
+          <>
+            <div className="analysis-grid">
+              <div className="stat-card">
+                <h3>총 트래픽</h3>
+                <div className="stat-value">{stats.total_traffic}</div>
+              </div>
+              <div className="stat-card">
+                <h3>탐지된 위협</h3>
+                <div className="stat-value" style={{color: '#e74c3c'}}>
+                  {stats.total_threats}
+                </div>
+              </div>
+              <div className="stat-card">
+                <h3>차단된 접근</h3>
+                <div className="stat-value" style={{color: '#e67e22'}}>
+                  {stats.blocked_access}
+                </div>
+              </div>
+              <div className="stat-card">
+                <h3>보안 점수</h3>
+                <div className="stat-value" style={{
+                  color: stats.security_score >= 90 ? '#27ae60' : 
+                         stats.security_score >= 70 ? '#f39c12' : '#e74c3c'
+                }}>
+                  {stats.security_score}%
+                </div>
+              </div>
+            </div>
 
-        <div className="traffic-chart">
-          <h2>📈 트래픽 흐름</h2>
-          <div className="chart-placeholder">
-            실시간 차트 데이터가 여기에 표시됩니다
-          </div>
-        </div>
-
-        <div className="traffic-chart">
-          <h2>⚠️ 최근 위협 탐지 로그</h2>
-          <div className="chart-placeholder">
-            위협 탐지 로그가 여기에 표시됩니다
-          </div>
-        </div>
+            <div className="traffic-chart">
+              <h2>⚠️ 최근 위협 탐지 로그</h2>
+              {threats.length === 0 ? (
+                <div className="chart-placeholder">
+                  현재 탐지된 위협이 없습니다. 시스템이 정상 작동 중입니다. ✅
+                </div>
+              ) : (
+                <div style={{
+                  background: 'white',
+                  borderRadius: '10px',
+                  padding: '1rem',
+                  maxHeight: '500px',
+                  overflowY: 'auto'
+                }}>
+                  {threats.map((threat, index) => (
+                    <div key={index} style={{
+                      padding: '1rem',
+                      marginBottom: '0.5rem',
+                      background: '#f8f9fa',
+                      borderRadius: '8px',
+                      borderLeft: `4px solid ${getSeverityColor(threat.severity)}`
+                    }}>
+                      <div style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        marginBottom: '0.5rem'
+                      }}>
+                        <strong style={{color: getSeverityColor(threat.severity)}}>
+                          [{threat.severity?.toUpperCase()}] {threat.protocol}
+                        </strong>
+                        <span style={{color: '#666', fontSize: '0.9rem'}}>
+                          {new Date(threat.timestamp).toLocaleString('ko-KR')}
+                        </span>
+                      </div>
+                      <div style={{color: '#333', marginBottom: '0.3rem'}}>
+                        <strong>출발지:</strong> {threat.source_ip} → <strong>목적지:</strong> {threat.destination_ip}
+                      </div>
+                      <div style={{color: '#666', fontSize: '0.95rem'}}>
+                        <strong>사유:</strong> {threat.reason}
+                      </div>
+                      <div style={{marginTop: '0.5rem'}}>
+                        <span style={{
+                          display: 'inline-block',
+                          padding: '0.3rem 0.8rem',
+                          background: threat.action === 'block' ? '#e74c3c' : '#3498db',
+                          color: 'white',
+                          borderRadius: '5px',
+                          fontSize: '0.85rem',
+                          fontWeight: 'bold'
+                        }}>
+                          {threat.action === 'block' ? '🚫 차단됨' : '👁️ 모니터링'}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </>
+        )}
       </div>
 
       {showModal && (

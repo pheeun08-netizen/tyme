@@ -9,7 +9,7 @@ export default function LandingPage() {
       <nav className="navbar">
         <div className="container navbar-content">
           <div className="logo" onClick={() => router.push('/')}>
-            🛡️ 네트워크 트래픽 분석
+             네트워크 트래픽 분석
           </div>
           <div className="nav-links">
             <button className="nav-button primary" onClick={() => router.push('/main')}>
